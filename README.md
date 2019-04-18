@@ -11,18 +11,18 @@ Making predictions in PySpark using sophistaicated python ml is unlocked using o
 
 `spark_predict` is a wrapper around a `pandas_udf`, a wrapper is used to enable a python ml model to be passed to the `pandas_udf`.
 
-    def spark_predict(model, *cols) -> pyspark.sql.column:
-        """This function deploys python ml in PySpark using the `predict` method of the `model` parameter.
+    def spark_predict(model, cols) -> pyspark.sql.column:
+        """This function deploys python ml in PySpark using the `predict` method of `model.
     
         Args:
             model: python ml model with sklearn API
-            *cols (list-like): Features used for predictions, required to be present as columns in the spark DataFrame used to make predictions.
+            cols (list-like): Features used for predictions, required to be present as columns in the spark DataFrame used to make predictions.
         """
         @sf.pandas_udf(returnType=DoubleType())
         def predict_pandas_udf(*cols):
             # cols will be a tuple of pandas.Series here.
-            X = pd.concat(cols, axis=1)
-            return pd.Series(model.predict(X))
+            x = pd.concat(cols, axis=1)
+            return pd.Series(model.predict(x))
     
         return predict_pandas_udf(*cols)
 
